@@ -108,17 +108,18 @@
 
 
 
-  <meta name="description" content="母鸡的理想不过是一把糠。">
+  <meta name="description" content="JAVA SPI浅析spi最典型的实例应用就是jdbc4.0,在jdbc4.0之前我们加载一个jdbc驱动通过Class.forName加载驱动,例子如下:   Class.forName(&amp;quot;com.mysql.jdbc.Driver&amp;quot;);   Connection conn = DriverManager.getConnection(&amp;quot;jdbc:mysql://lo">
+<meta name="keywords" content="java -spi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="dubbo spi特性">
 <meta property="og:url" content="http://yoursite.com/2018/06/12/dubbo-spi特性/index.html">
 <meta property="og:site_name" content="技术和生活">
-<meta property="og:description" content="母鸡的理想不过是一把糠。">
+<meta property="og:description" content="JAVA SPI浅析spi最典型的实例应用就是jdbc4.0,在jdbc4.0之前我们加载一个jdbc驱动通过Class.forName加载驱动,例子如下:   Class.forName(&amp;quot;com.mysql.jdbc.Driver&amp;quot;);   Connection conn = DriverManager.getConnection(&amp;quot;jdbc:mysql://lo">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-12T05:21:50.000Z">
+<meta property="og:updated_time" content="2018-06-12T09:40:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="dubbo spi特性">
-<meta name="twitter:description" content="母鸡的理想不过是一把糠。">
+<meta name="twitter:description" content="JAVA SPI浅析spi最典型的实例应用就是jdbc4.0,在jdbc4.0之前我们加载一个jdbc驱动通过Class.forName加载驱动,例子如下:   Class.forName(&amp;quot;com.mysql.jdbc.Driver&amp;quot;);   Connection conn = DriverManager.getConnection(&amp;quot;jdbc:mysql://lo">
 
 
 
@@ -364,12 +365,34 @@
                 
               
 
-              <time title="创建时间：2018-06-12 13:21:50" itemprop="dateCreated datePublished" datetime="2018-06-12T13:21:50+08:00">2018-06-12</time>
+              <time title="创建时间：2018-06-12 13:21:50 / 修改时间：17:40:20" itemprop="dateCreated datePublished" datetime="2018-06-12T13:21:50+08:00">2018-06-12</time>
             
 
+            
+              
+
+              
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -408,7 +431,19 @@
       
 
       
-        
+        <h3 id="JAVA-SPI浅析"><a href="#JAVA-SPI浅析" class="headerlink" title="JAVA SPI浅析"></a>JAVA SPI浅析</h3><p>spi最典型的实例应用就是jdbc4.0,在jdbc4.0之前我们加载一个jdbc驱动通过<code>Class.forName</code>加载驱动,例子如下:  </p>
+<pre><code>Class.forName(&quot;com.mysql.jdbc.Driver&quot;);  
+Connection conn = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306&quot;test&quot;, &quot;root&quot;, &quot;123456&quot;);  
+Statement stmt = conn.createStatement();  
+ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);  
+</code></pre><p>上面是jdbc4.0 加载驱动方式,<code>Class.forName(&quot;com.mysql.jdbc.Driver&quot;);</code>这里虽是加载mysql的driver,但是无论是oracle还是其它的jdbc驱动包，它们的原理都是spi机制。我们来看<code>java.sql.Driver</code>接口,这个接口在jdk中没有实现,这个接口是具体的个个数据厂商实现的.</p>
+<p><strong><em>Dubbo扩展点记载从JDK标准的SPI(Service Provider Interface)扩展点发现机制加强而来.</em></strong></p>
+<h4 id="Dubbo改进了JDK标准SPI的几个问题-核心类-ExtensionLoader"><a href="#Dubbo改进了JDK标准SPI的几个问题-核心类-ExtensionLoader" class="headerlink" title="Dubbo改进了JDK标准SPI的几个问题  核心类(ExtensionLoader)"></a>Dubbo改进了JDK标准SPI的几个问题  核心类(ExtensionLoader)</h4><ul>
+<li>JDK标准的SPI会一次性实例化扩展点所有实例,如果扩展实现初始化很耗时,但是如果没有用上也会被加载,这是非常浪费资源的.</li>
+<li>如果扩展加载失败了,启动不会报错,而在使用时会报不支持错误,比如: JDK 标准的<br>ScriptEngine，通过 getName() 获取脚本类型的名称，但如果RubyScriptEngine 因为所依赖的 jruby.jar 不存在，导致 RubyScriptEngine 类加载失败，这个失败原因被吃掉了，和 ruby 对应不起来，当用户执行 ruby脚本时,会报不支持ruby，而不是真正失败的原因。</li>
+<li>增加了对扩展点 IoC 和 AOP 的支持一个扩展点可以直接 setter 注入其它扩展点。</li>
+</ul>
+
       
     </div>
 
@@ -425,6 +460,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java-spi/" rel="tag"># java -spi</a>
+          
+        </div>
       
 
       
@@ -499,8 +540,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -534,12 +584,27 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                    <span class="site-state-item-count">2</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
               
 
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
               
             </nav>
           
@@ -583,6 +648,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#JAVA-SPI浅析"><span class="nav-number">1.</span> <span class="nav-text">JAVA SPI浅析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Dubbo改进了JDK标准SPI的几个问题-核心类-ExtensionLoader"><span class="nav-number">1.1.</span> <span class="nav-text">Dubbo改进了JDK标准SPI的几个问题  核心类(ExtensionLoader)</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
