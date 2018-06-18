@@ -437,165 +437,16 @@
       
         
           
-            <h2 id="java中垃圾收集器于内存分配策略"><a href="#java中垃圾收集器于内存分配策略" class="headerlink" title="java中垃圾收集器于内存分配策略"></a>java中垃圾收集器于内存分配策略</h2><p>java中为我们提供很多种垃圾回收的收集器每种收集都有不同的特点更具业务需求使用不同的收集器会带来服务性能上的大幅度提升.</p>
-<h3 id="新生代收集器"><a href="#新生代收集器" class="headerlink" title="新生代收集器"></a>新生代收集器</h3><h4 id="Serial"><a href="#Serial" class="headerlink" title="Serial"></a>Serial</h4><p>serial收集器应该是最基本的最久的收集器在jdk1.3之前是虚拟机新生代收集器的唯一选择,serial是一个”单线程”收集器,这个”单线程”有两个.一是它只会使用一个cpu和或者一条线程去完成垃圾收集工作,二是在它进行收集的同时会暂停其他所有工作线程知道收集结束这就是垃圾回收最大的挑战问题STW(Stop The World),在用户不可见情况下停掉所有工作线程,这个是个很蛋疼的问题,但是也没办法因为在线程回收期间如果工作线程不停止那么垃圾回收这个机制就永远无法完成,就像是一个人边扫地另一个人在扔垃圾,虽然看上去Serial像是一个老而无用的的比较鸡肋的收集器,但是它也有他的优点,他的优点就是简单高效对于单个cpu环境来说Serial收集器没有线程交互的开销自然可以做到最高单线程收集效率,所以serial收集器对于运行在client模式下的虚拟机来说是一个很好的选择.</p>
-<h5 id="Serial收集器运行示意图虚拟机"><a href="#Serial收集器运行示意图虚拟机" class="headerlink" title="Serial收集器运行示意图虚拟机"></a>Serial收集器运行示意图虚拟机</h5><p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1529308362659&amp;di=231f36fbd001648d2ac61fba456526dd&amp;imgtype=0&amp;src=http%3A%2F%2Fstatic.open-open.com%2Flib%2FuploadImg%2F20150603%2F20150603170409_98.jpg" alt="avatar"></p>
-<h4 id="ParNew"><a href="#ParNew" class="headerlink" title="ParNew"></a>ParNew</h4><p>ParNew其实算是Serial的多线程版本,ParNew在Serial出了多线程收集之外并没有大的创新,但他确实许多运行在Server模式下的虚拟机中首选新生代收集器,其中有一个于性能无关的重要原因是应为目前只有它能配合CMS收集器配合工作,在jdk1.5时期虚拟机推虚拟机出一款划时代意义收集器CMS收集器(Concurrent Markk Sweep)它第一次实现了垃圾收集线程和工作线程同时工作能力,但是CMS作为老年代收集器却无法于1.4中的新生代收集器Parallel Scavenge配合工作.<br>ParaNew在单cpu的环境绝对不会比serial收集效果好,在多线程环境下更适用于ParaNew,它默然开启收集线程数于cpu的数量相同,在cpu非常多情况下可以使用<code>-XX:ParallelGCThreads</code>参数来限制垃圾收集线程数量.</p>
-<h4 id="ParNew收集器运行示意图"><a href="#ParNew收集器运行示意图" class="headerlink" title="ParNew收集器运行示意图"></a>ParNew收集器运行示意图</h4><p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1529309987436&amp;di=4717082fb7d598b5e96f8aa2cdfc4581&amp;imgtype=jpg&amp;src=http%3A%2F%2Fimg3.imgtn.bdimg.com%2Fit%2Fu%3D1416028873%2C256319432%26fm%3D214%26gp%3D0.jpg" alt="avatar"></p>
-<h4 id="Parallel-Scavenge-下面简称PS"><a href="#Parallel-Scavenge-下面简称PS" class="headerlink" title="Parallel Scavenge(下面简称PS)"></a>Parallel Scavenge(下面简称PS)</h4><p>PS其实和ParNew看上去都是一样,都是并行的多线程收集器,都是用复制算法,但是它和其他收集最大的不同在于它的关注点不同,CMS,ParNew收集器的关注点在于尽可能的缩短GC导致的工作现场停顿时间,而PS目标则是达到一个可控制的吞吐量(Throughput),借用<code>借用官方解释就是CPU用于运行用户代码时间与CPU总消耗时间比值,即吞吐量=运行用户代码时间/(用户代码时间+GC时间)</code>,PS提供两个参数用于精确控制吞吐量,分别是最大垃圾收集时间<code>-XX:MaxGCPauseMillis</code>参数和直接设置吞吐量大小参数<code>-XX:GCTimeRatio</code><br>MaxGCPauseMillis允许设置一个大于O的毫秒数,收集器尽可能的保证GC时间不超过此设定值,注意千万不要认为吧这个参数设置的小就能让系统收集速度变快,GC停顿时间缩短是以减少吞吐量的代价和新生带空间的代价来换取的.<br>GCTimeRatio参数值允许设置为一个大于0小于100的整数,也是GC时间的占比数,例如    <code>-XX:GCTimeRatio=19</code>GC时间占比=(1/19+1)即5%,默认为99即%1.PS还提供一个参数<code>-XX:+UseAdaptiveSizePolicy</code> 这是一个开关参数,当使用这个参数时就不需要知道新生代的大小<code>-Xmm</code>,Eden于Survivor区的比例<code>-XX:SurvivorRatio</code>,晋升老年代对象大小<code>-XX:PretenureSizeThreshold</code>等细节参数,虚拟机会收集系统运行性能监控信息自动调整最合适的GC时间或者最大吞吐量,这种GC自适应的调节策略(GC Ergonomics)也是和ParNew很大的区别.</p>
-<h3 id="老年代收集器"><a href="#老年代收集器" class="headerlink" title="老年代收集器"></a>老年代收集器</h3><h4 id="Serial-Old"><a href="#Serial-Old" class="headerlink" title="Serial Old"></a>Serial Old</h4><p>Serial Old 是Serial老年代收集器版本,他同样是一个单线程收集器,使用”标记-整理”算法.它主要有两个用途,在jdk1.5之前主要用于与Parallel Scavenge收集器配合使用,另一个用途就是作为CMS收集器的后背方案在并发收集器发生Concurrent Mode Failure时使用.</p>
-<h4 id="Serial-Old运行示意图"><a href="#Serial-Old运行示意图" class="headerlink" title="Serial Old运行示意图"></a>Serial Old运行示意图</h4><p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1529313299895&amp;di=95582d939ff3cf57a23e795c0caf1b8c&amp;imgtype=0&amp;src=http%3A%2F%2Fstatic.open-open.com%2Flib%2FuploadImg%2F20150603%2F20150603170409_98.jpg" alt="avatar"></p>
-<h4 id="Paralle-Old"><a href="#Paralle-Old" class="headerlink" title="Paralle Old"></a>Paralle Old</h4><p>Paraller Old 是Parallel Scavenge收集器老年版本,使用多线程”标记-整理算法”,这个收集器在jdk1.6提供,在此之前,Parallel Scavenge 一直处于一个很尴尬的状态,如果新生代选择了Paralle Scavenge,老年代只能选择Serial Old,因为CMS无法于Parallel Scavenge配合工作,由于Serial Old的服务端性能上的欠缺,就算使用Paraller Scavenge在吞吐量上还是没有PraNew+CMS组合高.直到Paraller Old收集器出现后,才有了真正意义上的”吞吐量优先”的组合(Paraller Scavenge + Parallel Old)</p>
-<h4 id="Paraller-Old-运行示意图"><a href="#Paraller-Old-运行示意图" class="headerlink" title="Paraller Old 运行示意图"></a>Paraller Old 运行示意图</h4><p><img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2534739193,930028838&amp;fm=27&amp;gp=0.jpg" alt="avatar"></p>
-<h4 id="CMS-Concurrent-Mark-Sweep"><a href="#CMS-Concurrent-Mark-Sweep" class="headerlink" title="CMS(Concurrent Mark Sweep)"></a>CMS(Concurrent Mark Sweep)</h4><p>从名字就可以看出来,CMS是基于”标记-清除”算法实现的一个并发型GC,它的整个过程稍微复杂一点可分为4步  </p>
-<ul>
-<li>初始标记 (CMS initial mark)</li>
-<li>并发标记 (CMS concurrent mark)</li>
-<li>重新标记 (CMS remark)</li>
-<li>并发清除 (CMS concurrent sweep)<br>其中初始标记和重新标记两个步骤仍然会出现”STW”问题,初始标记仅仅只是标记一下GC Roots能直接关联到的对象(可达对象),重新标记标记则是为了修正并发标记期间因为用户程序继续运行而导致的标记产生变动的部分对象,这个阶段时间稍微长一点,但是远比并发标记时间短.<br>整个过程中耗时最长的是并发标记和并发清除两个过程,而这两个过程都可以与用户线程一起工作,所以CMS收集器的内存回收过程是与用户线程并发进行的.</li>
-</ul>
-<h4 id="CMS运行示意图"><a href="#CMS运行示意图" class="headerlink" title="CMS运行示意图"></a>CMS运行示意图</h4><p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1529314830657&amp;di=0e379baef927f9d967b18cb87b02c578&amp;imgtype=jpg&amp;src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D1610510649%2C3757814056%26fm%3D214%26gp%3D0.jpg" alt="avatar"></p>
-<p>CMS虽然是一款优秀的收集器但是CMS还远远没有达到完美的程度,它有下面三个明显的缺点:</p>
-<ul>
-<li>对CPU资源敏感<ul>
-<li>其实并发程序都对CPU资源敏感,在并发阶段虽然不会导致用户线程停顿,但是会因为占用一部分线程资源而导致程序变慢,吞吐量变低,CMS默认启动回收线程数是(CPU数量+3)/4,也就是说当CPU4个以上时,并发回收垃圾时线程资源不少于25%的CPU资源,并伴随着cpu的增加而下降,当cpu数不足4个时候CMS对用户程序影响很大,为了应对这种情况hotspot提供了一种”增量并发收集器”(Incremental Concurrent Mark Sweep /i-CMS)的CMS的变种收集器,原理就是在CPU过低CMS进行并发标记和清理的时候让GC线程和用户线程交替运行,尽量减少GC线程占资源时间,但是实践证明i-CMS 效果很一般,后面i-CMS被标记为 “deprecated”</li>
-</ul>
-</li>
-<li>CMS无法收集浮动垃圾<ul>
-<li>CMS无法收集浮动垃圾可能会出现”Concurrent Model Failure”失败从而导致一次Full GC,所谓浮动垃圾其实就是在CMS并发清理阶段用户线程还在运行,这段时间所出现的新垃圾产生,这段新垃圾没有被标识所以CMS无法收集,只有等下一次处理,也是因为垃圾收集时用户线程还在运行并且制造新的垃圾,那也就必须为这部分新的垃圾预留足够的内存空间给用户线程使用,所以CMS不能像其他老年代收集器一样等到老年代空间被塞满了再进行回收,jdk1.5 默认情况下当老年代使用了68%时候会被激活,根据具体业务,如果老年代增长不是太快可以使用<code>-XX:CMSInitiatingOccupancyFraction</code> 的值来提除法百分比.jdk1.6中默认已经提高的92%要是运行期间预留的内存无法满足程序需要就会出现一次”CMF”失败,这是后就会启用预备方案:启用Serial Old来进行老年带垃圾收集,这时候停顿时间就比较长了.所以所<code>-XX:CMSInitiatingOccupancyFraction</code>参数设置占比过高会出现很多”CMF”失败</li>
-</ul>
-</li>
-<li>CMS收集器GC后存在大量空间碎片<ul>
-<li>CMS是一款基于”标记-清除”算法实现的GC,这就意味着垃圾收集结束时会有很多内存空间碎片,空间碎片过多对大对象内存分配是一个很大的挑战,经常会出现明明老年代还有很多空间但是却无法找到足够容纳大对象的连续空间来分配当前对象,这样就不得不触发一次Full GC.为了解决这个问题,CMS提供一个参数用于在CMS收集器顶不住的时候进行Full GC时候开启内存碎片合并整理过程<code>-XX:+UseCMSCompactAtFullCollection</code>这是一个开关参数,默认是打开的,内存整理过程是无法并发的,空间碎片问题是没了但是停顿时间变长了,CMS还提供一个参数<code>-XX:CMSFullGCsBrforeCompaction</code> 这个参数用于设置执行多少次Full GC后跟着来一次碎片整理过程,默认为0,意思是每次Full GC 都进行整理.</li>
-</ul>
-</li>
-</ul>
-<h4 id="G1-XX-UseG1GC"><a href="#G1-XX-UseG1GC" class="headerlink" title="G1 (-XX:+UseG1GC)"></a>G1 (-XX:+UseG1GC)</h4><p>G1收集器可以说是很非常棒了,不仅能够充分利用CPU,多核优势来缩短”STW”停顿时间,还能够自动进行空间整合,这就意味着前面说的CMS空间碎片问题不存在,还能对”STM”停顿时间可预测,G1的各个优势.</p>
-<ul>
-<li>并发于并行 <ul>
-<li>G1充分利用多CPU多核环境下的硬件优势使用多个CPU来缩短”STP”停顿时间,部分其他收集器原本需要停顿java线程执行GC动作,G1仍然可以通过并发方式让java继续执行.</li>
-</ul>
-</li>
-<li>分代收集<ul>
-<li>于其他收集器一样分代概念在G1中依然保留,但是G1可以不需要其他收集器配合就能独立管理整个GC堆,它能够采用不同方式处理新创建的对象和已经存活一段时间以及熬过多次GC的旧对象已获得更好的手机效果.</li>
-</ul>
-</li>
-<li>空间整合<ul>
-<li>于CMS”标记-清除算法不同”G1从整体上来看是基于”标记-整理”算法实现,G1 将整个堆划分为一个个大小相等的小块（每一块称为一个 region），每一块的内存是连续的。和分代算法一样，G1 中每个块也会充当 Eden、Survivor、Old 三种角色，但是它们不是固定的，这使得内存使用更加地灵活。  </li>
-<li>执行垃圾收集时，和 CMS 一样，G1 收集线程在标记阶段和应用程序线程并发执行，标记结束后，G1 也就知道哪些区块基本上是垃圾，存活对象极少，G1 会先从这些区块下手，因为从这些区块能很快释放得到很大的可用空间.</li>
-</ul>
-</li>
-<li>可预测停顿    <ul>
-<li>这是G1不同于其他收集器的另一个优势,降低停顿时间是G1和CMS共同的关注点,但是G1出了追求低停顿外还能建立可预测停顿时间模型,能让使用者明确指定一个长度为M毫秒的时间片段内<code>-XX:MaxGCPauseMillis=N</code>,默认是200ms.G1收集器之所以能建立可预测停顿模型,是因为它可以有计划的避免整个Java堆中进行全区域垃圾收集,G1跟踪各个Region里面的垃圾堆积的价值大小,在后台维护一个优先列表,每次根据设置的收集时间优先回收价值最大的Region 这也是为什么 G1 被取名为 Garbage-First 的原因.这种使用Region划分内存空间以及有优先级的区域回收方式保证了在有限时间内可以最大化收集效率,将G1理解为内存”化整为零”的思路比较好理解,但是这其中内部时间肯定不是这么简单. </li>
-</ul>
-</li>
-</ul>
-<p>在G1收集器中,Region之间的对象引用以及其他收集器中的新生代于老年代之间的对象引用,虚拟机都是使用Remembered Set来避免全堆扫描的,G1中每个Region都有一个与之对应的RSet,虚拟机发现程序在对Reference类型的数据进行写操作时,会产生一个Write Barrier 暂时中断写操作,检查Reference引用对象是否处于不同的Region之中(在分代的例子中就是检查是否老年代中的对象引用了新生代中的对象),如果是,便通过CardTable把相关信息记录到被引用对象所属的Region的Remembered Set之中,当进行回收时在GC根节点中加入Remembered Set 即可保证不对全堆扫描也不会有遗漏.<br>忽略维护Remembered Set操作 G1收集器大致可以分为4个步骤</p>
-<ul>
-<li>初始标记(Initial Marking)</li>
-<li>并发标记(Concurrent Marking)</li>
-<li>最终标记(Final Marking)</li>
-<li>筛选标记(Live Data Counting andf Eevacuation)<br>其实G1在很大程度上于CMS很相似,初始标记仅仅只是标记小GC Roots能直接关联的对象,并且修改TAMS(netx Top at Mark Start)的值,让下一阶段用户线程并发运行时能够在正确的Region中创建对象,这阶段需要停顿线程,但耗时很短,并发标记是从GC Root开始对堆中对象进行可达分析,找出存活对象,这段比较耗时,但是可以与用户线程并行执行,最终标记则是为了修正在并发标记期间用户线程运行所导致标记产生变动的那一部分标记(这部分对象产出变化记录在线程Rememberd Set Logs中),最终标记就是将这短时间对象变化记录合并到RSet中,这段时间需要停顿,但是可并行执行,最后筛选回收阶段首先对各个Region的回首价值进行排序,根据用户设置的GC停顿时间来制定最大价值回收计划(从sun公司透漏出的信息看,这个阶段也可以做到与用户线程并发执行的,但是因为只是回首一部分Region,时间也是用户控制的,而且停顿用户线程将大幅度提高收集效率)</li>
-</ul>
-<h4 id="G1收集器运行示意图"><a href="#G1收集器运行示意图" class="headerlink" title="G1收集器运行示意图"></a>G1收集器运行示意图</h4><p><img src="https://www.duyidong.com/images/G1_Collector.png" alt="avatar"></p>
-<h3 id="内存分配策略和回收策略"><a href="#内存分配策略和回收策略" class="headerlink" title="内存分配策略和回收策略"></a>内存分配策略和回收策略</h3><p>对象分配其实就是在堆上分配(也有可能经过JIT编译后被拆散为标量类型并间接的栈上分配),对象主要分配在新生代的Eden区上,如果启动了本地线程分配缓冲将按线程优先在TLAB上分配,少数情况下也可能直接分配在老年代中,分配规则不是百分百确定,细节取决的使用哪种收集器组合和虚拟机于内存相关参数.</p>
-<ul>
-<li>对象优先在Eden区分配</li>
-<li>大对象直接进入老年代<ul>
-<li>所谓大对象是指需要大量的连续空间的java对象比如说字符串和数组,大对象对虚拟机来说是个坏消息,而短命的大对象就是更加坏的消息!</li>
-</ul>
-</li>
-<li>长期存活对象进入老年代<ul>
-<li>熬过多次Minor GC 的对象会被晋升到老年代    </li>
-</ul>
-</li>
-<li>动态对象年龄判断</li>
-<li>空间分配担保</li>
-</ul>
-<h4 id="垃圾收集参数总结-这些参数可能不准确-具体默认参数需要看你使用的是虚拟机和jdk版本"><a href="#垃圾收集参数总结-这些参数可能不准确-具体默认参数需要看你使用的是虚拟机和jdk版本" class="headerlink" title="垃圾收集参数总结(这些参数可能不准确,具体默认参数需要看你使用的是虚拟机和jdk版本)"></a>垃圾收集参数总结(这些参数可能不准确,具体默认参数需要看你使用的是虚拟机和jdk版本)</h4><table>
-<thead>
-<tr>
-<th>参数</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>UseSerialGC</td>
-<td>虚拟机运行在Client模式下的默认值,打开此开关后使用Serial+Serial Old 的收集器组合</td>
-</tr>
-<tr>
-<td>UseParNewGC</td>
-<td>打开此开关后使用PraNew+Serial Old 的收集器组合回首</td>
-</tr>
-<tr>
-<td>UseConcMarkSweepGC</td>
-<td>打开此开关后使用ParNew+CMS+Serial old 的收集器组合进行内存回首,Serial Old 作为CMS出现”CMF”失败后的后背收集器使用</td>
-</tr>
-<tr>
-<td>UseParallerGC</td>
-<td>打开此开关后使用Parallel + Scavenge + Serial Old(PS MarkSweep)的收集器组合进行内存回收,这是虚拟机运行在Server模式下的默认值.</td>
-</tr>
-<tr>
-<td>UseParallerOldGC</td>
-<td>打开此开关后,使用Paraller Scavenge + Parallel Old的收集器组合进行内存回收</td>
-</tr>
-<tr>
-<td>UseG1GC</td>
-<td>打开此开关后使用G1收集器进行内存回收</td>
-</tr>
-<tr>
-<td>SurvivorRatio</td>
-<td>新生代中Eden区域和Survivor区域的容量比值,默认为8,代表Eden:Survivor=8:1</td>
-</tr>
-<tr>
-<td>PretenureSizeThreshold</td>
-<td>直接晋升到老年代的对象大小,大于此阈值直接在老年代分配空间</td>
-</tr>
-<tr>
-<td>MaxTenuringThreshold</td>
-<td>晋升到老年代的对象年龄,每个对象在坚持过一次MinorGC之后年龄就会+1当超过这个阈值时进入老年代,默认15 注意:这个也不一定就复合这个值<a href="https://www.ibm.com/developerworks/cn/java/j-lo-jvm-optimize-experience/index.html" target="_blank" rel="noopener">详情看这里</a></td>
-</tr>
-<tr>
-<td>UseAdaptiveSizePolicy</td>
-<td>打开此开关启用动态调整调整堆中各个区域的大小已经进入老年代的年龄</td>
-</tr>
-<tr>
-<td>ParallelGCThreds</td>
-<td>设置并行GC时进行内存回收的线程数</td>
-</tr>
-<tr>
-<td>GCTimeRatio</td>
-<td>GC时间占比,默认99,即允许1%GC时间,仅在 Paraller Scavenge收集时生效</td>
-</tr>
-<tr>
-<td>MaxGCPauseMillis</td>
-<td>设置GC的最大停顿时间,仅在使用Parallel Scavenge收集器时生效</td>
-</tr>
-<tr>
-<td>CMSInitiatingOccupancyFraciton</td>
-<td>设置CMS收集器在老年代空间被使用多少后触发垃圾收集.默认值更具各个不同jdk版本设置以及各个厂商虚拟机默认设置</td>
-</tr>
-<tr>
-<td>UseCMSCompactAtFullCollection</td>
-<td>设置CMS 出现Full GC收集后是否需要进行一次内存碎片整理,仅在CMS生效,默认开启</td>
-</tr>
-<tr>
-<td>CMSFullGCsBeforeCompaction</td>
-<td>设置CMS在多少次Full GC后启动一次内存碎片整理,仅在CMS生效,默认0 每次都开启</td>
-</tr>
-</tbody>
-</table>
-<h3 id="特别说明"><a href="#特别说明" class="headerlink" title="特别说明"></a>特别说明</h3><ul>
-<li><p>并行(Parallel):指多条垃圾收集线程并行工作,此时用户线程仍然处于等待状态.例如ParNew和Serial 都是属于并行收集器</p>
-</li>
-<li><p>并发(Concurrent):指工作线程和垃圾收集线程同时运行(不一定是并行,可能是交替运行),用户程序子啊继续运行,而垃圾回收线程在另一个cpu上. 例如CMS. G1是属于并发和并行结合体.</p>
-</li>
-<li>新生代GC(Minor GC):指发生在新生代的垃圾手机动作,因为java对象大多都具备朝生夕灭的特性,所以Minor GC平率非常高,回首速度也很快.</li>
-<li>老年代GC(Major GC/Full GC): 指发生在老年代的GC 出现MajorGC,通常会伴随一次Minor GC 但是这并不是绝对的,MajorGC一般会比MinorGC慢10倍左右<h5 id="这两两个概念一定要搞清楚"><a href="#这两两个概念一定要搞清楚" class="headerlink" title="这两两个概念一定要搞清楚!"></a>这两两个概念一定要搞清楚!</h5></li>
-</ul>
-
-          
+          java中垃圾收集器于内存分配策略java中为我们提供很多种垃圾回收的收集器每种收集都有不同的特点更具业务需求使用不同的收集器会带来服务性能上的大幅度提升.
+新生代收集器Serialserial收集器应该是最基本的最久的收集器在jdk1.3之前是虚拟机新生代收集器的唯一选择,serial是一个”单线程”收集器,这个”单线程”有两个.一是它只会使用一个cpu和或者一条线程去完成垃圾收集工作,二是在它进行收集的同时会暂停其他所有工作线程知道收集结束这就是垃圾回收最大的挑战问题STW(Stop The World),在用户不可见情况下停掉所有工作线程,这个是个很蛋疼的问题,但是也没办法因为在线程回收
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/18/关于GC和内存分配策略/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -758,9 +609,15 @@
       
         
           
-            <h4 id="对于学历我的个人看法和经历"><a href="#对于学历我的个人看法和经历" class="headerlink" title="对于学历我的个人看法和经历"></a>对于学历我的个人看法和经历</h4><p>&emsp;&emsp;其实对于我们这行学历对于大部分人来说貌似没有什么特别重要的联系(除非你是搞算法之类的),因为平常工作中接触最多的技术就是一些优秀框架使用,已经设计思想和原理,这些东西个人觉得只要愿意学习都是可以学会理解的.学历作为敲门砖,这块砖的质量觉得你的求职上限.<br><br>&emsp;&emsp;前几天准备换工作来着,因为一直在外包做,最近客户那边也没什么事儿就出去找工作,面了两家,一家微医,一家有赞,其中拿到了微医的offer,但是出于各种原因最终没去,我们主要说说有赞的经历,因为简历上面没有写有关于学历的东西,电面过后有幸就被邀请面试,面试还算ok,<br>大概面了三轮,第一主要面技术,2个人面试. 进来就直接进入主题,让我先自我介绍和讲讲自己的做的项目,哎….其实我特别不习惯自我介绍和介绍项目这个环节,然后就巴拉巴拉的讲了一些…..然后就各种问技术相关方面的大概一个小时,完了之后让我等待.<br><br>&emsp;&emsp;第二轮,来了个中年人,看来应该是他们的头头,进来也是让我自我介绍,哎…无奈,然后就巴拉巴拉讲了一通,然后问了一些比较底层的问题,我的回答中规中矩吧,知道的就说不知道就直接说不知道不搪塞.然后聊了一下他们团队的一些情况,还互相留了微信(此时我心里大概知道应该是妥了),聊了大概40来分钟,然后又让我等待.<br>等了大概10分钟,来了一个美女,然后各种聊规划什么,然后问起我学历问题,我坦言说我因为休学没有毕业,额……然后她说你岂不是没有毕业? 我回答:”你可以当我是个高中生”.然后就说要去问下让我等下,大概过了5分钟就说 “今天就先面到这里!”.我大概知道凉了,当时心情很复杂.<br><br>&emsp;&emsp;这件事让我知道学历真的很重要,学历就像是包装盒,没有包装盒的产品普遍被认为是劣质的产品,即使你是优质产品,即使包装盒对于产品使用来说并没什么卵关系,但是没有包装盒你就是会被人认为是劣质产品.</p>
-<h4 id="我觉得没有学历的不可怕-可怕的是你因为没学历而放弃成为优质产品的理想-虽然你需比其他人付出更多的努力更多的汗水来证明自己也是优质产品-但这些努力和汗水是值得的-当然大家不要错误的理解为学历不重要-学历还是很重要的能让你少走很多冤枉路-哎我现在就时常后悔为什么当年不好好在大学学习"><a href="#我觉得没有学历的不可怕-可怕的是你因为没学历而放弃成为优质产品的理想-虽然你需比其他人付出更多的努力更多的汗水来证明自己也是优质产品-但这些努力和汗水是值得的-当然大家不要错误的理解为学历不重要-学历还是很重要的能让你少走很多冤枉路-哎我现在就时常后悔为什么当年不好好在大学学习" class="headerlink" title="我觉得没有学历的不可怕,可怕的是你因为没学历而放弃成为优质产品的理想,虽然你需比其他人付出更多的努力更多的汗水来证明自己也是优质产品,但这些努力和汗水是值得的!当然大家不要错误的理解为学历不重要,学历还是很重要的能让你少走很多冤枉路,哎我现在就时常后悔为什么当年不好好在大学学习!!!"></a>我觉得没有学历的不可怕,可怕的是你因为没学历而放弃成为优质产品的理想,虽然你需比其他人付出更多的努力更多的汗水来证明自己也是优质产品,但这些努力和汗水是值得的!当然大家不要错误的理解为学历不重要,学历还是很重要的能让你少走很多冤枉路,哎我现在就时常后悔为什么当年不好好在大学学习!!!</h4>
-          
+          对于学历我的个人看法和经历&emsp;&emsp;其实对于我们这行学历对于大部分人来说貌似没有什么特别重要的联系(除非你是搞算法之类的),因为平常工作中接触最多的技术就是一些优秀框架使用,已经设计思想和原理,这些东西个人觉得只要愿意学习都是可以学会理解的.学历作为敲门砖,这块砖的质量觉得你的求职上限.&emsp;&emsp;前几天准备换工作来着,因为一直在外包做,最近客户那边也没什么事儿就出去找工作,面了两家,一家微医,一家有赞,其中拿到了微医的offer,但是出于各种原因最终没去,我们主要说说有赞的经历,因为简历上面没有写有关于学历的东西,电面过后有幸就被邀请面试,面试还算ok,大概面了三轮
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/16/做我们这行毕业证到底重要不重要/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -923,9 +780,16 @@
       
         
           
-            <p>今天发现半饥饿状态下工作思维非常清晰………….<br>看来以后吃饭不能吃太饱,差不多6成饱就好了😆😆😀😀</p>
+          今天发现半饥饿状态下工作思维非常清晰………….看来以后吃饭不能吃太饱,差不多6成饱就好了😆😆😀😀
 
           
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/13/半饥饿状态思维非常清晰/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1100,59 +964,16 @@
       
         
           
-            <h3 id="关于锁锁"><a href="#关于锁锁" class="headerlink" title="关于锁锁"></a>关于锁锁</h3><h4 id="什么是锁"><a href="#什么是锁" class="headerlink" title="什么是锁?"></a>什么是锁?</h4><p>&emsp;&emsp; 这个问题我觉得没啥必要回答,你可以称之为锁,你也可以叫他链子,张三,李四都可以,😀😀,皮一下,锁是大家公认的名词而已,我们主要看他解决了什么问题.</p>
-<h4 id="锁解决了什么问题"><a href="#锁解决了什么问题" class="headerlink" title="锁解决了什么问题?"></a>锁解决了什么问题?</h4><p>&emsp;&emsp;众所周知高并发编程中线程安全是重要的关注点,那造成线程安全的主要问题是什么?最主要就是多个线程存在操作和使用临界资源(共享资源),为了解决这个问题我们需要一个机制,这个机制就是保证同一时刻有且只有一个线程在操作临界资源,这种方式有个高尚的名称叫互斥锁,也就是说当一个共享数据被当前正在访问的线程加上互斥锁后，在同一个时刻，其他线程只能处于等待的状态，直到当前线程处理完毕释放该锁。在java中可以使用synchronized关键字(保证可见性(主要是共享数据的变化被其他线程所看到)，完全可以替代Volatile功能),和Lock类两种锁其中主要区别如下</p>
-<table>
-<thead>
-<tr>
-<th>类别</th>
-<th>synchronized</th>
-<th>Lock</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>存在层次</td>
-<td>Java的关键字，在jvm层面上</td>
-<td>是一个类</td>
-</tr>
-<tr>
-<td>锁的释放</td>
-<td>1、以获取锁的线程执行完同步代码，释放锁 2、线程执行发生异常，jvm会让线程释放锁</td>
-<td>在finally中必须释放锁，不然容易造成线程死锁</td>
-</tr>
-<tr>
-<td>锁的获取</td>
-<td>假设A线程获得锁，B线程等待。如果A线程阻塞，B线程会一直等待</td>
-<td>分情况而定，Lock有多个锁获取的方式，具体下面会说道，大致就是可以尝试获得锁，线程可以不用一直等待</td>
-</tr>
-<tr>
-<td>锁状态</td>
-<td>无法判断</td>
-<td>可以判断</td>
-</tr>
-<tr>
-<td>锁类型</td>
-<td>可重入 不可中断 非公平</td>
-<td>可重入 可判断 可公平（两者皆可）</td>
-</tr>
-<tr>
-<td>性能</td>
-<td>1.6版本优化之后性能同lock差不多,官方推荐</td>
-<td>大量同步</td>
-</tr>
-<tr>
-<td>锁使用</td>
-<td>1:修饰实例方法，作用于当前实例加锁，进入同步代码前要获得当前实例的锁<br>2:修饰静态方法，作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁(对于静态方法锁,锁对象是当前class对象)<br>3:修饰代码块，指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。</td>
-<td>在加锁和解锁处需要通过lock()和unlock()显示指出就可以,nulocak一般写在finally块中</td>
-</tr>
-</tbody>
-</table>
-<p><a href="URL" title="http://www.blogjava.net/xylz/archive/2010/07/07/325410.html">关于lock原理参考这篇博文(非常棒)</a></p>
-<h3 id="目前设计锁的分类"><a href="#目前设计锁的分类" class="headerlink" title="目前设计锁的分类"></a>目前设计锁的分类</h3><p>主流为乐观锁,悲观锁,自旋锁,重入锁<br><a href="URL" title="https://blog.csdn.net/a314773862/article/details/54095819">关于锁类型介绍参考这篇博文</a></p>
-<h4 id="关于使用锁的思考"><a href="#关于使用锁的思考" class="headerlink" title="关于使用锁的思考"></a>关于使用锁的思考</h4><p>我们在使用锁的时候应该要清楚为什么使用锁使用什么锁,它能为我们带来什么缺点是什么,不要盲目使用锁!</p>
-
-          
+          关于锁锁什么是锁?&emsp;&emsp; 这个问题我觉得没啥必要回答,你可以称之为锁,你也可以叫他链子,张三,李四都可以,😀😀,皮一下,锁是大家公认的名词而已,我们主要看他解决了什么问题.
+锁解决了什么问题?&emsp;&emsp;众所周知高并发编程中线程安全是重要的关注点,那造成线程安全的主要问题是什么?最主要就是多个线程存在操作和使用临界资源(共享资源),为了解决这个问题我们需要一个机制,这个机制就是保证同一时刻有且只有一个线程在操作临界资源,这种方式有个高尚的名称叫互斥锁,也就是说当一个共享数据被当前正在访问的线程加上互斥锁后，在同一个时刻，其他线程只能处于等待的状态，直到当前线程
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/12/分布式锁-幂等-到底是什么/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1320,20 +1141,18 @@
       
         
           
-            <h3 id="JAVA-SPI浅析"><a href="#JAVA-SPI浅析" class="headerlink" title="JAVA SPI浅析"></a>JAVA SPI浅析</h3><p>spi最典型的实例应用就是jdbc4.0,在jdbc4.0之前我们加载一个jdbc驱动通过<code>Class.forName</code>加载驱动,例子如下:  </p>
-<pre><code>Class.forName(&quot;com.mysql.jdbc.Driver&quot;);  
+          JAVA SPI浅析spi最典型的实例应用就是jdbc4.0,在jdbc4.0之前我们加载一个jdbc驱动通过Class.forName加载驱动,例子如下:  
+Class.forName(&quot;com.mysql.jdbc.Driver&quot;);  
 Connection conn = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306&quot;test&quot;, &quot;root&quot;, &quot;123456&quot;);  
-Statement stmt = conn.createStatement();  
-ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);  
-</code></pre><p>上面是jdbc4.0 加载驱动方式,<code>Class.forName(&quot;com.mysql.jdbc.Driver&quot;);</code>这里虽是加载mysql的driver,但是无论是oracle还是其它的jdbc驱动包，它们的原理都是spi机制。我们来看<code>java.sql.Driver</code>接口,这个接口在jdk中没有实现,这个接口是具体的个个数据厂商实现的.</p>
-<p><strong><em>Dubbo扩展点记载从JDK标准的SPI(Service Provider Interface)扩展点发现机制加强而来.</em></strong></p>
-<h4 id="Dubbo改进了JDK标准SPI的几个问题-核心类-ExtensionLoader"><a href="#Dubbo改进了JDK标准SPI的几个问题-核心类-ExtensionLoader" class="headerlink" title="Dubbo改进了JDK标准SPI的几个问题  核心类(ExtensionLoader)"></a>Dubbo改进了JDK标准SPI的几个问题  核心类(ExtensionLoader)</h4><ul>
-<li>JDK标准的SPI会一次性实例化扩展点所有实例,如果扩展实现初始化很耗时,但是如果没有用上也会被加载,这是非常浪费资源的.</li>
-<li>如果扩展加载失败了,启动不会报错,而在使用时会报不支持错误,比如: JDK 标准的<br>ScriptEngine，通过 getName() 获取脚本类型的名称，但如果RubyScriptEngine 因为所依赖的 jruby.jar 不存在，导致 RubyScriptEngine 类加载失败，这个失败原因被吃掉了，和 ruby 对应不起来，当用户执行 ruby脚本时,会报不支持ruby，而不是真正失败的原因。</li>
-<li>增加了对扩展点 IoC 和 AOP 的支持一个扩展点可以直接 setter 注入其它扩展点。</li>
-</ul>
-
-          
+Statement stmt = conn.createS
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/12/dubbo-spi特性/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
