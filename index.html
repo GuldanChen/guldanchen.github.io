@@ -326,6 +326,141 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/18/平庸开发者的生存指南/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GuldanChen">
+      <meta itemprop="description" content="母鸡的理想不过是一把糠。">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/26451311?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="好记性不如烂笔头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/18/平庸开发者的生存指南/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-18 20:05:13" itemprop="dateCreated datePublished" datetime="2018-06-18T20:05:13+08:00">2018-06-18</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/18/关于GC和内存分配策略/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -372,7 +507,7 @@
                 
               
 
-              <time title="创建时间：2018-06-18 17:33:23 / 修改时间：18:03:02" itemprop="dateCreated datePublished" datetime="2018-06-18T17:33:23+08:00">2018-06-18</time>
+              <time title="创建时间：2018-06-18 17:33:23 / 修改时间：20:06:17" itemprop="dateCreated datePublished" datetime="2018-06-18T17:33:23+08:00">2018-06-18</time>
             
 
             
@@ -592,7 +727,7 @@
 <li><p>并发(Concurrent):指工作线程和垃圾收集线程同时运行(不一定是并行,可能是交替运行),用户程序子啊继续运行,而垃圾回收线程在另一个cpu上. 例如CMS. G1是属于并发和并行结合体.</p>
 </li>
 <li>新生代GC(Minor GC):指发生在新生代的垃圾手机动作,因为java对象大多都具备朝生夕灭的特性,所以Minor GC平率非常高,回首速度也很快.</li>
-<li>老年代GC(Major GC/Full GC): 指发生在老年代的GC 出现MajorGC,通常会伴随一次Minor GC 但是这并不是绝对的,MajorGC一般会比MinorGC慢10倍左右<h5 id="这两两个概念一定要搞清楚"><a href="#这两两个概念一定要搞清楚" class="headerlink" title="这两两个概念一定要搞清楚!"></a>这两两个概念一定要搞清楚!</h5></li>
+<li>老年代GC(Major GC/Full GC): 指发生在老年代的GC 出现MajorGC,通常会伴随一次Minor GC 但是这并不是绝对的,MajorGC一般会比MinorGC慢10倍左右<br>GC触发时机可以参考这篇文章<a href="https://blog.csdn.net/duj671/article/details/50857743" target="_blank" rel="noopener">传送门</a><h5 id="这两两个概念一定要搞清楚"><a href="#这两两个概念一定要搞清楚" class="headerlink" title="这两两个概念一定要搞清楚!"></a>这两两个概念一定要搞清楚!</h5></li>
 </ul>
 <h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p>深入理解jvm虚拟机<br><a href="https://plumbr.io/handbook/garbage-collection-algorithms-implementations#g1" target="_blank" rel="noopener">https://plumbr.io/handbook/garbage-collection-algorithms-implementations#g1</a><br><a href="https://blogs.oracle.com/poonam/understanding-g1-gc-logs" target="_blank" rel="noopener">https://blogs.oracle.com/poonam/understanding-g1-gc-logs</a><br><a href="http://www.oracle.com/technetwork/tutorials/tutorials-1876574.html" target="_blank" rel="noopener">http://www.oracle.com/technetwork/tutorials/tutorials-1876574.html</a></p>
 
@@ -1417,7 +1552,7 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
