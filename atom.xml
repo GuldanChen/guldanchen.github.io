@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-06-19T02:35:37.000Z</updated>
+  <updated>2018-06-19T01:40:13.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,35 +15,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>tomcat中的动态数组</title>
-    <link href="http://yoursite.com/2018/06/19/%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84/"/>
-    <id>http://yoursite.com/2018/06/19/动态数组/</id>
-    <published>2018-06-19T01:58:51.000Z</published>
-    <updated>2018-06-19T02:35:37.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong><em>我们先看看一段tomcat源码</em></strong></p><p><img src="http://chuantu.biz/t6/330/1529375702x-1404793459.png" alt="avatar">  </p><p>这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有象我们平时使用数组那样一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的实现了动态数组的功能，值得借鉴。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;strong&gt;&lt;em&gt;我们先看看一段tomcat源码&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://chuantu.biz/t6/330/1529375702x-1404793459.png&quot; alt=&quot;avatar&quot;&gt;  &lt;/p&gt;
-&lt;p&gt;这
-      
-    
-    </summary>
-    
-      <category term="随便记" scheme="http://yoursite.com/categories/%E9%9A%8F%E4%BE%BF%E8%AE%B0/"/>
-    
-      <category term="tomcat中的动态数组" scheme="http://yoursite.com/categories/%E9%9A%8F%E4%BE%BF%E8%AE%B0/tomcat%E4%B8%AD%E7%9A%84%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84/"/>
-    
-    
-      <category term="小技巧" scheme="http://yoursite.com/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
-    
-  </entry>
   
   <entry>
     <title>关于GC和内存分配策略</title>
@@ -71,33 +42,6 @@
       <category term="GC" scheme="http://yoursite.com/tags/GC/"/>
     
       <category term="内存分配" scheme="http://yoursite.com/tags/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>做我们这行毕业证到底重要不重要?</title>
-    <link href="http://yoursite.com/2018/06/16/%E5%81%9A%E6%88%91%E4%BB%AC%E8%BF%99%E8%A1%8C%E6%AF%95%E4%B8%9A%E8%AF%81%E5%88%B0%E5%BA%95%E9%87%8D%E8%A6%81%E4%B8%8D%E9%87%8D%E8%A6%81/"/>
-    <id>http://yoursite.com/2018/06/16/做我们这行毕业证到底重要不重要/</id>
-    <published>2018-06-16T11:12:58.000Z</published>
-    <updated>2018-06-16T11:59:43.000Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="对于学历我的个人看法和经历"><a href="#对于学历我的个人看法和经历" class="headerlink" title="对于学历我的个人看法和经历"></a>对于学历我的个人看法和经历</h4><p>&emsp;&emsp;其实对于我们这行学历对于大部分人来说貌似没有什么特别重要的联系(除非你是搞算法之类的),因为平常工作中接触最多的技术就是一些优秀框架使用,已经设计思想和原理,这些东西个人觉得只要愿意学习都是可以学会理解的.学历作为敲门砖,这块砖的质量觉得你的求职上限.<br><br>&emsp;&emsp;前几天准备换工作来着,因为一直在外包做,最近客户那边也没什么事儿就出去找工作,面了两家,一家微医,一家有赞,其中拿到了微医的offer,但是出于各种原因最终没去,我们主要说说有赞的经历,因为简历上面没有写有关于学历的东西,电面过后有幸就被邀请面试,面试还算ok,<br>大概面了三轮,第一主要面技术,2个人面试. 进来就直接进入主题,让我先自我介绍和讲讲自己的做的项目,哎….其实我特别不习惯自我介绍和介绍项目这个环节,然后就巴拉巴拉的讲了一些…..然后就各种问技术相关方面的大概一个小时,完了之后让我等待.<br><br>&emsp;&emsp;第二轮,来了个中年人,看来应该是他们的头头,进来也是让我自我介绍,哎…无奈,然后就巴拉巴拉讲了一通,然后问了一些比较底层的问题,我的回答中规中矩吧,知道的就说不知道就直接说不知道不搪塞.然后聊了一下他们团队的一些情况,还互相留了微信(此时我心里大概知道应该是妥了),聊了大概40来分钟,然后又让我等待.<br>等了大概10分钟,来了一个美女,然后各种聊规划什么,然后问起我学历问题,我坦言说我因为休学没有毕业,额……然后她说你岂不是没有毕业? 我回答:”你可以当我是个高中生”.然后就说要去问下让我等下,大概过了5分钟就说 “今天就先面到这里!”.我大概知道凉了,当时心情很复杂.<br><br>&emsp;&emsp;这件事让我知道学历真的很重要,学历就像是包装盒,没有包装盒的产品普遍被认为是劣质的产品,即使你是优质产品,即使包装盒对于产品使用来说并没什么卵关系,但是没有包装盒你就是会被人认为是劣质产品.</p><h4 id="我觉得没有学历的不可怕-可怕的是你因为没学历而放弃成为优质产品的理想-虽然你需比其他人付出更多的努力更多的汗水来证明自己也是优质产品-但这些努力和汗水是值得的-当然大家不要错误的理解为学历不重要-学历还是很重要的能让你少走很多冤枉路-哎我现在就时常后悔为什么当年不好好在大学学习"><a href="#我觉得没有学历的不可怕-可怕的是你因为没学历而放弃成为优质产品的理想-虽然你需比其他人付出更多的努力更多的汗水来证明自己也是优质产品-但这些努力和汗水是值得的-当然大家不要错误的理解为学历不重要-学历还是很重要的能让你少走很多冤枉路-哎我现在就时常后悔为什么当年不好好在大学学习" class="headerlink" title="我觉得没有学历的不可怕,可怕的是你因为没学历而放弃成为优质产品的理想,虽然你需比其他人付出更多的努力更多的汗水来证明自己也是优质产品,但这些努力和汗水是值得的!当然大家不要错误的理解为学历不重要,学历还是很重要的能让你少走很多冤枉路,哎我现在就时常后悔为什么当年不好好在大学学习!!!"></a>我觉得没有学历的不可怕,可怕的是你因为没学历而放弃成为优质产品的理想,虽然你需比其他人付出更多的努力更多的汗水来证明自己也是优质产品,但这些努力和汗水是值得的!当然大家不要错误的理解为学历不重要,学历还是很重要的能让你少走很多冤枉路,哎我现在就时常后悔为什么当年不好好在大学学习!!!</h4>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h4 id=&quot;对于学历我的个人看法和经历&quot;&gt;&lt;a href=&quot;#对于学历我的个人看法和经历&quot; class=&quot;headerlink&quot; title=&quot;对于学历我的个人看法和经历&quot;&gt;&lt;/a&gt;对于学历我的个人看法和经历&lt;/h4&gt;&lt;p&gt;&amp;emsp;&amp;emsp;其实对于我们这行学历对于大部
-      
-    
-    </summary>
-    
-      <category term="生活" scheme="http://yoursite.com/categories/%E7%94%9F%E6%B4%BB/"/>
-    
-      <category term="杂谈" scheme="http://yoursite.com/categories/%E7%94%9F%E6%B4%BB/%E6%9D%82%E8%B0%88/"/>
-    
-    
-      <category term="生活杂谈" scheme="http://yoursite.com/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E8%B0%88/"/>
     
   </entry>
   
@@ -205,6 +149,35 @@
     
     
       <category term="类加载" scheme="http://yoursite.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>tomcat中的动态数组</title>
+    <link href="http://yoursite.com/2017/02/27/%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84/"/>
+    <id>http://yoursite.com/2017/02/27/动态数组/</id>
+    <published>2017-02-27T01:58:51.000Z</published>
+    <updated>2017-02-28T22:22:05.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong><em>我们先看看一段tomcat源码</em></strong></p><p><img src="http://chuantu.biz/t6/330/1529375702x-1404793459.png" alt="avatar">  </p><p>这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有象我们平时使用数组那样一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的实现了动态数组的功能，值得借鉴。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;strong&gt;&lt;em&gt;我们先看看一段tomcat源码&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://chuantu.biz/t6/330/1529375702x-1404793459.png&quot; alt=&quot;avatar&quot;&gt;  &lt;/p&gt;
+&lt;p&gt;这
+      
+    
+    </summary>
+    
+      <category term="随便记" scheme="http://yoursite.com/categories/%E9%9A%8F%E4%BE%BF%E8%AE%B0/"/>
+    
+      <category term="tomcat中的动态数组" scheme="http://yoursite.com/categories/%E9%9A%8F%E4%BE%BF%E8%AE%B0/tomcat%E4%B8%AD%E7%9A%84%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84/"/>
+    
+    
+      <category term="小技巧" scheme="http://yoursite.com/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
     
   </entry>
   
