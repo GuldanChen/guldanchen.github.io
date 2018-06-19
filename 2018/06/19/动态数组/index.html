@@ -108,18 +108,20 @@
 
 
 
-  <meta name="description" content="今天发现半饥饿状态下工作思维非常清晰………….看来以后吃饭不能吃太饱,差不多6成饱就好了😆😆😀😀">
-<meta name="keywords" content="生活杂谈">
+  <meta name="description" content="我们先看看一段tomcat源码    这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有象我们平时使用数组那样一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的实现了动态数组的功能，值得借鉴。">
+<meta name="keywords" content="小技巧">
 <meta property="og:type" content="article">
-<meta property="og:title" content="半饥饿状态思维非常清晰">
-<meta property="og:url" content="http://yoursite.com/2018/06/13/半饥饿状态思维非常清晰/index.html">
+<meta property="og:title" content="tomcat中的动态数组">
+<meta property="og:url" content="http://yoursite.com/2018/06/19/动态数组/index.html">
 <meta property="og:site_name" content="好记性不如烂笔头">
-<meta property="og:description" content="今天发现半饥饿状态下工作思维非常清晰………….看来以后吃饭不能吃太饱,差不多6成饱就好了😆😆😀😀">
+<meta property="og:description" content="我们先看看一段tomcat源码    这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有象我们平时使用数组那样一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的实现了动态数组的功能，值得借鉴。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-13T08:00:23.000Z">
+<meta property="og:image" content="http://yoursite.com/image/addConnector.png">
+<meta property="og:updated_time" content="2018-06-19T02:29:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="半饥饿状态思维非常清晰">
-<meta name="twitter:description" content="今天发现半饥饿状态下工作思维非常清晰………….看来以后吃饭不能吃太饱,差不多6成饱就好了😆😆😀😀">
+<meta name="twitter:title" content="tomcat中的动态数组">
+<meta name="twitter:description" content="我们先看看一段tomcat源码    这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有象我们平时使用数组那样一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的实现了动态数组的功能，值得借鉴。">
+<meta name="twitter:image" content="http://yoursite.com/image/addConnector.png">
 
 
 
@@ -128,7 +130,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/06/13/半饥饿状态思维非常清晰/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/06/19/动态数组/"/>
 
 
 
@@ -138,7 +140,7 @@
   };
 </script>
 
-  <title>半饥饿状态思维非常清晰 | 好记性不如烂笔头</title>
+  <title>tomcat中的动态数组 | 好记性不如烂笔头</title>
   
 
 
@@ -327,7 +329,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/13/半饥饿状态思维非常清晰/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/19/动态数组/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="GuldanChen">
@@ -344,7 +346,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">半饥饿状态思维非常清晰
+          <h1 class="post-title" itemprop="name headline">tomcat中的动态数组
               
             
           </h1>
@@ -369,7 +371,7 @@
                 
               
 
-              <time title="创建时间：2018-06-13 15:55:53 / 修改时间：16:00:23" itemprop="dateCreated datePublished" datetime="2018-06-13T15:55:53+08:00">2018-06-13</time>
+              <time title="创建时间：2018-06-19 09:58:51 / 修改时间：10:29:59" itemprop="dateCreated datePublished" datetime="2018-06-19T09:58:51+08:00">2018-06-19</time>
             
 
             
@@ -391,14 +393,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/生活/" itemprop="url" rel="index"><span itemprop="name">生活</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/随便记/" itemprop="url" rel="index"><span itemprop="name">随便记</span></a></span>
 
                 
                 
                   ，
                 
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/生活/杂谈/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/随便记/tomcat中的动态数组/" itemprop="url" rel="index"><span itemprop="name">tomcat中的动态数组</span></a></span>
 
                 
                 
@@ -413,8 +415,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/06/13/半饥饿状态思维非常清晰/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/13/半饥饿状态思维非常清晰/" itemprop="commentsCount"></span>
+                <a href="/2018/06/19/动态数组/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/19/动态数组/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -442,7 +444,9 @@
       
 
       
-        <p>今天发现半饥饿状态下工作思维非常清晰………….<br>看来以后吃饭不能吃太饱,差不多6成饱就好了😆😆😀😀</p>
+        <p><strong><em>我们先看看一段tomcat源码</em></strong></p>
+<p><img src="/image/addConnector.png" alt="">  </p>
+<p>这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有象我们平时使用数组那样一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的实现了动态数组的功能，值得借鉴。</p>
 
       
     </div>
@@ -463,7 +467,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/生活杂谈/" rel="tag"># 生活杂谈</a>
+            <a href="/tags/小技巧/" rel="tag"># 小技巧</a>
           
         </div>
       
@@ -476,8 +480,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/12/java中的锁/" rel="next" title="java中的锁">
-                <i class="fa fa-chevron-left"></i> java中的锁
+              <a href="/2018/06/18/平庸开发者的生存指南/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
               </a>
             
           </div>
@@ -485,10 +489,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/06/16/做我们这行毕业证到底重要不重要/" rel="prev" title="做我们这行毕业证到底重要不重要?">
-                做我们这行毕业证到底重要不重要? <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
