@@ -108,17 +108,18 @@
 
 
 
-  <meta name="description" content="母鸡的理想不过是一把糠。">
+  <meta name="description" content="我们先看看一段tomcat源码 ![]{/image/addConntor}   这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有想我们使用数组一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的">
+<meta name="keywords" content="随便记,tomcat">
 <meta property="og:type" content="article">
-<meta property="og:title" content="好记性不如烂笔头">
-<meta property="og:url" content="http://yoursite.com/2018/06/18/平庸开发者的生存指南/index.html">
+<meta property="og:title" content="动态数组">
+<meta property="og:url" content="http://yoursite.com/2018/06/19/动态数组/index.html">
 <meta property="og:site_name" content="好记性不如烂笔头">
-<meta property="og:description" content="母鸡的理想不过是一把糠。">
+<meta property="og:description" content="我们先看看一段tomcat源码 ![]{/image/addConntor}   这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有想我们使用数组一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-18T12:05:13.000Z">
+<meta property="og:updated_time" content="2018-06-19T02:22:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="好记性不如烂笔头">
-<meta name="twitter:description" content="母鸡的理想不过是一把糠。">
+<meta name="twitter:title" content="动态数组">
+<meta name="twitter:description" content="我们先看看一段tomcat源码 ![]{/image/addConntor}   这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有想我们使用数组一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的">
 
 
 
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/06/18/平庸开发者的生存指南/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/06/19/动态数组/"/>
 
 
 
@@ -137,7 +138,7 @@
   };
 </script>
 
-  <title> | 好记性不如烂笔头</title>
+  <title>动态数组 | 好记性不如烂笔头</title>
   
 
 
@@ -326,7 +327,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/18/平庸开发者的生存指南/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/19/动态数组/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="GuldanChen">
@@ -343,7 +344,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h1 class="post-title" itemprop="name headline">动态数组
               
             
           </h1>
@@ -368,9 +369,13 @@
                 
               
 
-              <time title="创建时间：2018-06-18 20:05:13" itemprop="dateCreated datePublished" datetime="2018-06-18T20:05:13+08:00">2018-06-18</time>
+              <time title="创建时间：2018-06-19 09:58:51 / 修改时间：10:22:53" itemprop="dateCreated datePublished" datetime="2018-06-19T09:58:51+08:00">2018-06-19</time>
             
 
+            
+              
+
+              
             
           </span>
 
@@ -383,8 +388,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/06/18/平庸开发者的生存指南/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/18/平庸开发者的生存指南/" itemprop="commentsCount"></span>
+                <a href="/2018/06/19/动态数组/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/06/19/动态数组/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -412,7 +417,10 @@
       
 
       
-        
+        <p><strong><em>我们先看看一段tomcat源码</em></strong></p>
+<p>![]{/image/addConntor}  </p>
+<p>这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有想我们使用数组一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的实现了动态数组的功能，值得借鉴。</p>
+
       
     </div>
 
@@ -430,6 +438,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/随便记/" rel="tag"># 随便记</a>
+          
+            <a href="/tags/tomcat/" rel="tag"># tomcat</a>
+          
+        </div>
+      
 
       
       
@@ -439,8 +455,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/18/关于GC和内存分配策略/" rel="next" title="关于GC和内存分配策略">
-                <i class="fa fa-chevron-left"></i> 关于GC和内存分配策略
+              <a href="/2018/06/18/平庸开发者的生存指南/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
               </a>
             
           </div>
@@ -448,10 +464,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/06/19/动态数组/" rel="prev" title="动态数组">
-                动态数组 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>

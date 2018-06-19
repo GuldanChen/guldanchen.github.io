@@ -326,6 +326,148 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/19/动态数组/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GuldanChen">
+      <meta itemprop="description" content="母鸡的理想不过是一把糠。">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/26451311?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="好记性不如烂笔头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/19/动态数组/" itemprop="url">
+                  动态数组
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-19 09:58:51 / 修改时间：10:22:53" itemprop="dateCreated datePublished" datetime="2018-06-19T09:58:51+08:00">2018-06-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong><em>我们先看看一段tomcat源码</em></strong></p>
+<p>![]{/image/addConntor}  </p>
+<p>这个方法很简单，是tomcat对connectors设置关联关系，然后初始化开始新的生命周期。这里可以看到这个Connector没有使用List而是使用数组，这是出于性能角度考虑可以理解。这里并没有想我们使用数组一开始就固定大小，而是重新创建了一个当前数组大小的数组对象，然后将原来数组拷贝到新的数组中，这种方式变相的实现了动态数组的功能，值得借鉴。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/18/平庸开发者的生存指南/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1770,7 +1912,7 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1820,7 +1962,11 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
                     
                       
                     
-                    <span class="site-state-item-count">6</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
