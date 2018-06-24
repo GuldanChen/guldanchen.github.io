@@ -326,7 +326,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/12/java中的锁/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/12/dubbo-spi特性/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="GuldanChen">
@@ -345,233 +345,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/12/java中的锁/" itemprop="url">
-                  java中的锁
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-06-12 18:00:23" itemprop="dateCreated datePublished" datetime="2018-06-12T18:00:23+08:00">2018-06-12</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-06-18 18:59:27" itemprop="dateModified" datetime="2018-06-18T18:59:27+08:00">2018-06-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/锁/" itemprop="url" rel="index"><span itemprop="name">锁</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="关于锁锁"><a href="#关于锁锁" class="headerlink" title="关于锁锁"></a>关于锁锁</h3><h4 id="锁解决了什么问题"><a href="#锁解决了什么问题" class="headerlink" title="锁解决了什么问题?"></a>锁解决了什么问题?</h4><p>&emsp;&emsp;众所周知高并发编程中线程安全是重要的关注点,那造成线程安全的主要问题是什么?最主要就是多个线程存在操作和使用临界资源(共享资源),为了解决这个问题我们需要一个机制,这个机制就是保证同一时刻有且只有一个线程在操作临界资源,这种方式有个高尚的名称叫互斥锁,也就是说当一个共享数据被当前正在访问的线程加上互斥锁后，在同一个时刻，其他线程只能处于等待的状态，直到当前线程处理完毕释放该锁。在java中可以使用synchronized关键字(保证可见性(主要是共享数据的变化被其他线程所看到)，完全可以替代Volatile功能),和Lock类两种锁其中主要区别如下</p>
-<table>
-<thead>
-<tr>
-<th>类别</th>
-<th>synchronized</th>
-<th>Lock</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>存在层次</td>
-<td>Java的关键字，在jvm层面上</td>
-<td>是一个类</td>
-</tr>
-<tr>
-<td>锁的释放</td>
-<td>1、以获取锁的线程执行完同步代码，释放锁 2、线程执行发生异常，jvm会让线程释放锁</td>
-<td>在finally中必须释放锁，不然容易造成线程死锁</td>
-</tr>
-<tr>
-<td>锁的获取</td>
-<td>假设A线程获得锁，B线程等待。如果A线程阻塞，B线程会一直等待</td>
-<td>分情况而定，Lock有多个锁获取的方式，具体下面会说道，大致就是可以尝试获得锁，线程可以不用一直等待</td>
-</tr>
-<tr>
-<td>锁状态</td>
-<td>无法判断</td>
-<td>可以判断</td>
-</tr>
-<tr>
-<td>锁类型</td>
-<td>可重入 不可中断 非公平</td>
-<td>可重入 可判断 可公平（两者皆可）</td>
-</tr>
-<tr>
-<td>性能</td>
-<td>1.6版本优化之后性能同lock差不多,官方推荐</td>
-<td>大量同步</td>
-</tr>
-<tr>
-<td>锁使用</td>
-<td>1:修饰实例方法，作用于当前实例加锁，进入同步代码前要获得当前实例的锁<br>2:修饰静态方法，作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁(对于静态方法锁,锁对象是当前class对象)<br>3:修饰代码块，指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。</td>
-<td>在加锁和解锁处需要通过lock()和unlock()显示指出就可以,nulocak一般写在finally块中</td>
-</tr>
-</tbody>
-</table>
-<p><a href="URL" title="http://www.blogjava.net/xylz/archive/2010/07/07/325410.html">关于lock原理参考这篇博文(非常棒)</a></p>
-<h3 id="目前设计锁的分类"><a href="#目前设计锁的分类" class="headerlink" title="目前设计锁的分类"></a>目前设计锁的分类</h3><p>主流为乐观锁,悲观锁,自旋锁,重入锁<br><a href="URL" title="https://blog.csdn.net/a314773862/article/details/54095819">关于锁类型介绍参考这篇博文</a></p>
-<h4 id="关于使用锁的思考"><a href="#关于使用锁的思考" class="headerlink" title="关于使用锁的思考"></a>关于使用锁的思考</h4><p>我们在使用锁的时候应该要清楚为什么使用锁使用什么锁,它能为我们带来什么缺点是什么,不要盲目使用锁!</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/12/dubbo-spi特性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="GuldanChen">
-      <meta itemprop="description" content="母鸡的理想不过是一把糠。">
-      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/26451311?s=460&v=4">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="好记性不如烂笔头">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/12/dubbo-spi特性/" itemprop="url">
+                <a class="post-title-link" href="/2018/02/12/dubbo-spi特性/" itemprop="url">
                   java spi
                 </a>
               
@@ -598,7 +372,7 @@
                 
               
 
-              <time title="创建时间：2018-06-12 13:21:50" itemprop="dateCreated datePublished" datetime="2018-06-12T13:21:50+08:00">2018-06-12</time>
+              <time title="创建时间：2018-02-12 13:21:50" itemprop="dateCreated datePublished" datetime="2018-02-12T13:21:50+08:00">2018-02-12</time>
             
 
             
@@ -615,7 +389,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-06-13 15:59:47" itemprop="dateModified" datetime="2018-06-13T15:59:47+08:00">2018-06-13</time>
+                <time title="修改时间：2017-02-21 11:22:05" itemprop="dateModified" datetime="2017-02-21T11:22:05+08:00">2017-02-21</time>
               
             
           </span>
@@ -733,7 +507,7 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/02/关于GC和内存分配策略/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/18/关于类加载器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="GuldanChen">
@@ -752,7 +526,189 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/04/02/关于GC和内存分配策略/" itemprop="url">
+                <a class="post-title-link" href="/2017/06/18/关于类加载器/" itemprop="url">
+                  关于类加载器
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-06-18 21:54:41 / 修改时间：23:02:45" itemprop="dateCreated datePublished" datetime="2017-06-18T21:54:41+08:00">2017-06-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/关于类加载器/" itemprop="url" rel="index"><span itemprop="name">关于类加载器</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="关于类加载器"><a href="#关于类加载器" class="headerlink" title="关于类加载器"></a>关于类加载器</h3><p><strong><em>一直想写一篇关于类加载的东西,嗯!就今天吧(持续更新)</em></strong>  </p>
+<p>java作为天生可以动态扩展的语言,其特性就是依赖运行期动态加载和动态链接这个特点实现,比如一个接口,这个接口可以在运行时再指定其实际实际类,用户可以通过java预定义的和自己定义类加载器让一个本地应用程序可以在运行时从网络或其他地方加载一个二进制流作为程序代码的一部分,这种组装被广泛运用,Applet,JSP,OSGi都是用java语言运行期类加载的特性. </p>
+<h4 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h4><p> 类加载时机如下图<br> <img src="http://incdn1.b0.upaiyun.com/2017/06/2fb054008ca2898e0a17f7d79ce525a1.png" alt="avatar"><br> 如图类加载总共分为7个阶段,其中验证、准备、解析三个部分统称为链接，类的加载过程必须按照这种顺序按部就班的“开始”，请注意是开始不是“进行”或者“完成”，因为在类的解析阶段是有可能在初始化之后进行的，这是为了支持java语言运行时绑定（动态绑定或晚期绑定）</p>
+<ul>
+<li>类什么时候被加载？<ul>
+<li>类什么时候加载虚拟机规范中并没有严格规定，这点是虚拟机具体实现自由把控，但对于初始化阶段虚拟机规范则是严格规定有且仅有5种情况必须对类进行初始化，而初始化之前必须是类被加载、被验证、并且已准备，<ul>
+<li>当遇到new,getstatic,putstatic或者invokestatic 这个四个字节码指令时，如果类没有进行过初始化，则需要先进行初始化，这四条指令最常见的场景是 new Object（） 和读取或者设置一个静态属性时（被final修饰，以及已经在编译期把结果放入常量池的静态字段除外）。</li>
+<li>使用反射时候。</li>
+<li>初始化类时候，如果发现其父类没有进行过初始化，则需要先触发其父类初始化。</li>
+<li>当虚拟机启动时，指定的一个类要执行的主类（包含main（）方法那个类），虚拟机会先初始化这个类。</li>
+<li>当使用jdk动态语言支持时候，如果一个java.lang.invoke.MethodHandle实例最后解析结果REF_getStatic，REF_putStatic，REF_invokeStatic的方法句柄并且句柄多对应的类没有进行初始化，则需要先触发其初始化。<br>上面五种场景的行为称为对一个类进行主动引用，除此之外，所有引用类的方式都不会触发其初始化，称之为被动引用。下面分别举三个被动调用例子。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">package com.me.test;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class SuperClass &#123;</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;superclass !&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public static int value = 1;</span><br><span class="line">    public static class ChildClassA extends SuperClass &#123;</span><br><span class="line">        static &#123;</span><br><span class="line">            System.out.println(&quot;child&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	 /**被动动使用类字段引用例子*/</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">    	 /**</span><br><span class="line">         *  这里只会输出 “superclass” 而不会输出 &quot;child&quot;,对于静态字段，</span><br><span class="line">         *  只有直接定义这个字段的类才会被初始化，至于是否触发子类的初始化</span><br><span class="line">         *  之前的步骤我虚拟机规范并未明确确定，我们可以使用 -XX:+TraceClassLoading</span><br><span class="line">         *  参数观察到此操作会导致子类的加载详情</span><br><span class="line">         */</span><br><span class="line">        System.out.println(SuperClass.value);        </span><br><span class="line">    &#125;</span><br><span class="line">    		</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">    	SuperClass sca = new SuperClass[10];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class SuperClass &#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;superclass !&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public static int value = 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class ChildClassB extends  SuperClass &#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;ChildClassB&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">/**注意这里没有使用静态内部类而是另外创建一个class 在一个class里面nwe 关键字是会初始化类*/</span><br><span class="line">public class NotInitialization &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        /**</span><br><span class="line">         * 通过数组定义来引用类，不会触发此类初始化！</span><br><span class="line">         * 但是这里初始化另外一个类[Lcom.me.test.SuperClass，对用户啊来说这是个不合法的类</span><br><span class="line">         * 它是由虚拟机创建直接继承Object的子类，这个类表示为一个SuperClass 的一维数组  </span><br><span class="line">         */</span><br><span class="line">        SuperClass[] sca = new SuperClass[10];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class ConstClass &#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;ConstClass&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public static final String CONST_CLASS=&quot;constClass&quot;;</span><br><span class="line">&#125;</span><br><span class="line">public class NotInitialization &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        /**</span><br><span class="line">         * 常量在编译阶段会存入调用类的常量池中，本质上并没有直接饮用到定义的常量类</span><br><span class="line">         */</span><br><span class="line">        System.out.println(ConstClass.CONST_CLASS);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/05/关于GC和内存分配策略/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GuldanChen">
+      <meta itemprop="description" content="母鸡的理想不过是一把糠。">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/26451311?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="好记性不如烂笔头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/05/关于GC和内存分配策略/" itemprop="url">
                   关于GC和内存分配策略
                 </a>
               
@@ -779,25 +735,9 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
                 
               
 
-              <time title="创建时间：2018-04-02 17:33:23" itemprop="dateCreated datePublished" datetime="2018-04-02T17:33:23+08:00">2018-04-02</time>
+              <time title="创建时间：2017-04-05 03:29:05" itemprop="dateCreated datePublished" datetime="2017-04-05T03:29:05+08:00">2017-04-05</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2017-04-05 06:22:05" itemprop="dateModified" datetime="2017-04-05T06:22:05+08:00">2017-04-05</time>
-              
             
           </span>
 
@@ -1079,7 +1019,7 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/18/关于类加载器/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/05/java中的锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="GuldanChen">
@@ -1098,8 +1038,8 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/06/18/关于类加载器/" itemprop="url">
-                  关于类加载器
+                <a class="post-title-link" href="/2017/03/05/java中的锁/" itemprop="url">
+                  java中的锁
                 </a>
               
             
@@ -1125,13 +1065,9 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
                 
               
 
-              <time title="创建时间：2017-06-18 21:54:41 / 修改时间：23:22:05" itemprop="dateCreated datePublished" datetime="2017-06-18T21:54:41+08:00">2017-06-18</time>
+              <time title="创建时间：2017-03-05 21:29:05" itemprop="dateCreated datePublished" datetime="2017-03-05T21:29:05+08:00">2017-03-05</time>
             
 
-            
-              
-
-              
             
           </span>
 
@@ -1154,7 +1090,7 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
                   ，
                 
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/关于类加载器/" itemprop="url" rel="index"><span itemprop="name">关于类加载器</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/锁/" itemprop="url" rel="index"><span itemprop="name">锁</span></a></span>
 
                 
                 
@@ -1190,25 +1126,57 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
       
         
           
-            <h3 id="关于类加载器"><a href="#关于类加载器" class="headerlink" title="关于类加载器"></a>关于类加载器</h3><p><strong><em>一直想写一篇关于类加载的东西,嗯!就今天吧(持续更新)</em></strong>  </p>
-<p>java作为天生可以动态扩展的语言,其特性就是依赖运行期动态加载和动态链接这个特点实现,比如一个接口,这个接口可以在运行时再指定其实际实际类,用户可以通过java预定义的和自己定义类加载器让一个本地应用程序可以在运行时从网络或其他地方加载一个二进制流作为程序代码的一部分,这种组装被广泛运用,Applet,JSP,OSGi都是用java语言运行期类加载的特性. </p>
-<h4 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h4><p> 类加载时机如下图<br> <img src="http://incdn1.b0.upaiyun.com/2017/06/2fb054008ca2898e0a17f7d79ce525a1.png" alt="avatar"><br> 如图类加载总共分为7个阶段,其中验证、准备、解析三个部分统称为链接，类的加载过程必须按照这种顺序按部就班的“开始”，请注意是开始不是“进行”或者“完成”，因为在类的解析阶段是有可能在初始化之后进行的，这是为了支持java语言运行时绑定（动态绑定或晚期绑定）</p>
-<ul>
-<li>类什么时候被加载？<ul>
-<li>类什么时候加载虚拟机规范中并没有严格规定，这点是虚拟机具体实现自由把控，但对于初始化阶段虚拟机规范则是严格规定有且仅有5种情况必须对类进行初始化，而初始化之前必须是类被加载、被验证、并且已准备，<ul>
-<li>当遇到new,getstatic,putstatic或者invokestatic 这个四个字节码指令时，如果类没有进行过初始化，则需要先进行初始化，这四条指令最常见的场景是 new Object（） 和读取或者设置一个静态属性时（被final修饰，以及已经在编译期把结果放入常量池的静态字段除外）。</li>
-<li>使用反射时候。</li>
-<li>初始化类时候，如果发现其父类没有进行过初始化，则需要先触发其父类初始化。</li>
-<li>当虚拟机启动时，指定的一个类要执行的主类（包含main（）方法那个类），虚拟机会先初始化这个类。</li>
-<li>当使用jdk动态语言支持时候，如果一个java.lang.invoke.MethodHandle实例最后解析结果REF_getStatic，REF_putStatic，REF_invokeStatic的方法句柄并且句柄多对应的类没有进行初始化，则需要先触发其初始化。<br>上面五种场景的行为称为对一个类进行主动引用，除此之外，所有引用类的方式都不会触发其初始化，称之为被动引用。下面分别举三个被动调用例子。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">package com.me.test;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class SuperClass &#123;</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;superclass !&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public static int value = 1;</span><br><span class="line">    public static class ChildClassA extends SuperClass &#123;</span><br><span class="line">        static &#123;</span><br><span class="line">            System.out.println(&quot;child&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	 /**被动动使用类字段引用例子*/</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">    	 /**</span><br><span class="line">         *  这里只会输出 “superclass” 而不会输出 &quot;child&quot;,对于静态字段，</span><br><span class="line">         *  只有直接定义这个字段的类才会被初始化，至于是否触发子类的初始化</span><br><span class="line">         *  之前的步骤我虚拟机规范并未明确确定，我们可以使用 -XX:+TraceClassLoading</span><br><span class="line">         *  参数观察到此操作会导致子类的加载详情</span><br><span class="line">         */</span><br><span class="line">        System.out.println(SuperClass.value);        </span><br><span class="line">    &#125;</span><br><span class="line">    		</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">    	SuperClass sca = new SuperClass[10];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class SuperClass &#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;superclass !&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public static int value = 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class ChildClassB extends  SuperClass &#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;ChildClassB&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">/**注意这里没有使用静态内部类而是另外创建一个class 在一个class里面nwe 关键字是会初始化类*/</span><br><span class="line">public class NotInitialization &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        /**</span><br><span class="line">         * 通过数组定义来引用类，不会触发此类初始化！</span><br><span class="line">         * 但是这里初始化另外一个类[Lcom.me.test.SuperClass，对用户啊来说这是个不合法的类</span><br><span class="line">         * 它是由虚拟机创建直接继承Object的子类，这个类表示为一个SuperClass 的一维数组  </span><br><span class="line">         */</span><br><span class="line">        SuperClass[] sca = new SuperClass[10];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class ConstClass &#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;ConstClass&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public static final String CONST_CLASS=&quot;constClass&quot;;</span><br><span class="line">&#125;</span><br><span class="line">public class NotInitialization &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        /**</span><br><span class="line">         * 常量在编译阶段会存入调用类的常量池中，本质上并没有直接饮用到定义的常量类</span><br><span class="line">         */</span><br><span class="line">        System.out.println(ConstClass.CONST_CLASS);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <h3 id="关于锁锁"><a href="#关于锁锁" class="headerlink" title="关于锁锁"></a>关于锁锁</h3><h4 id="锁解决了什么问题"><a href="#锁解决了什么问题" class="headerlink" title="锁解决了什么问题?"></a>锁解决了什么问题?</h4><p>&emsp;&emsp;众所周知高并发编程中线程安全是重要的关注点,那造成线程安全的主要问题是什么?最主要就是多个线程存在操作和使用临界资源(共享资源),为了解决这个问题我们需要一个机制,这个机制就是保证同一时刻有且只有一个线程在操作临界资源,这种方式有个高尚的名称叫互斥锁,也就是说当一个共享数据被当前正在访问的线程加上互斥锁后，在同一个时刻，其他线程只能处于等待的状态，直到当前线程处理完毕释放该锁。在java中可以使用synchronized关键字(保证可见性(主要是共享数据的变化被其他线程所看到)，完全可以替代Volatile功能),和Lock类两种锁其中主要区别如下</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>synchronized</th>
+<th>Lock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存在层次</td>
+<td>Java的关键字，在jvm层面上</td>
+<td>是一个类</td>
+</tr>
+<tr>
+<td>锁的释放</td>
+<td>1、以获取锁的线程执行完同步代码，释放锁 2、线程执行发生异常，jvm会让线程释放锁</td>
+<td>在finally中必须释放锁，不然容易造成线程死锁</td>
+</tr>
+<tr>
+<td>锁的获取</td>
+<td>假设A线程获得锁，B线程等待。如果A线程阻塞，B线程会一直等待</td>
+<td>分情况而定，Lock有多个锁获取的方式，具体下面会说道，大致就是可以尝试获得锁，线程可以不用一直等待</td>
+</tr>
+<tr>
+<td>锁状态</td>
+<td>无法判断</td>
+<td>可以判断</td>
+</tr>
+<tr>
+<td>锁类型</td>
+<td>可重入 不可中断 非公平</td>
+<td>可重入 可判断 可公平（两者皆可）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>1.6版本优化之后性能同lock差不多,官方推荐</td>
+<td>大量同步</td>
+</tr>
+<tr>
+<td>锁使用</td>
+<td>1:修饰实例方法，作用于当前实例加锁，进入同步代码前要获得当前实例的锁<br>2:修饰静态方法，作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁(对于静态方法锁,锁对象是当前class对象)<br>3:修饰代码块，指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。</td>
+<td>在加锁和解锁处需要通过lock()和unlock()显示指出就可以,nulocak一般写在finally块中</td>
+</tr>
+</tbody>
+</table>
+<p><a href="URL" title="http://www.blogjava.net/xylz/archive/2010/07/07/325410.html">关于lock原理参考这篇博文(非常棒)</a></p>
+<h3 id="目前设计锁的分类"><a href="#目前设计锁的分类" class="headerlink" title="目前设计锁的分类"></a>目前设计锁的分类</h3><p>主流为乐观锁,悲观锁,自旋锁,重入锁<br><a href="URL" title="https://blog.csdn.net/a314773862/article/details/54095819">关于锁类型介绍参考这篇博文</a></p>
+<h4 id="关于使用锁的思考"><a href="#关于使用锁的思考" class="headerlink" title="关于使用锁的思考"></a>关于使用锁的思考</h4><p>我们在使用锁的时候应该要清楚为什么使用锁使用什么锁,它能为我们带来什么缺点是什么,不要盲目使用锁!</p>
+
           
         
       
@@ -1324,7 +1292,7 @@ ResultSet rs = stmt.executeQuery(&quot;select * from Users&quot;);
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2017-03-01 06:22:05" itemprop="dateModified" datetime="2017-03-01T06:22:05+08:00">2017-03-01</time>
+                <time title="修改时间：2017-03-01 06:21:05" itemprop="dateModified" datetime="2017-03-01T06:21:05+08:00">2017-03-01</time>
               
             
           </span>
